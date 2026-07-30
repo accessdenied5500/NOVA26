@@ -92,3 +92,153 @@ p {
     }
 
 }
+
+.login-container {
+
+    text-align: center;
+
+    width: 90%;
+    max-width: 400px;
+
+}
+
+
+.login-box {
+
+    margin-top: 30px;
+
+}
+
+
+.login-box input {
+
+    width: 100%;
+
+    padding: 15px;
+
+    margin: 10px 0;
+
+    border-radius: 10px;
+
+    border: none;
+
+    font-size: 16px;
+
+}
+
+
+.login-box button {
+
+    width: 100%;
+
+    padding: 15px;
+
+    margin-top: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #22d3ee;
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+}
+
+
+.login-box a {
+
+    display: block;
+
+    margin-top: 20px;
+
+    color: white;
+
+    text-decoration: none;
+
+}
+
+.dashboard-container {
+
+    width: 90%;
+    max-width: 450px;
+
+}
+
+
+.dashboard-container h1 {
+
+    margin-bottom: 10px;
+
+}
+
+
+.progress-card,
+.card {
+
+    background: rgba(255,255,255,0.15);
+
+    padding: 20px;
+
+    margin-top: 20px;
+
+    border-radius: 15px;
+
+}
+
+
+.progress-bar {
+
+    width: 100%;
+
+    height: 12px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    margin: 15px 0;
+
+}
+
+
+.progress {
+
+    width: 80%;
+
+    height: 100%;
+
+    background: #22d3ee;
+
+    border-radius: 10px;
+
+}
+
+
+.card-section {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+
+}
+
+
+.card h3 {
+
+    font-size: 18px;
+
+}
+
+
+.card p {
+
+    font-size: 14px;
+
+}
