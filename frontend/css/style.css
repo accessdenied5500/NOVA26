@@ -242,3 +242,163 @@ p {
     font-size: 14px;
 
 }
+
+/* Nova 26 Splash Animation */
+
+
+.nova-logo {
+
+    animation: fadeIn 1.5s ease;
+
+}
+
+
+.star {
+
+    font-size: 80px;
+
+    animation: float 2s infinite ease-in-out;
+
+}
+
+
+.nova-logo h1 {
+
+    font-size: 45px;
+
+    letter-spacing: 5px;
+
+}
+
+
+.nova-logo span {
+
+    color: #22d3ee;
+
+}
+
+
+.tagline {
+
+    opacity: 0;
+
+    animation: slideUp 1s ease forwards;
+
+    animation-delay: 0.8s;
+
+}
+
+
+
+.loading {
+
+    margin-top: 40px;
+
+}
+
+
+.circle {
+
+    width: 45px;
+
+    height: 45px;
+
+    border: 5px solid rgba(255,255,255,0.3);
+
+    border-top-color: white;
+
+    border-radius: 50%;
+
+    margin:auto;
+
+    animation: rotate 1s linear infinite;
+
+}
+
+
+
+.loading p {
+
+    margin-top:15px;
+
+}
+
+
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity:0;
+
+        transform:scale(0.7);
+
+    }
+
+    to {
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+
+@keyframes float {
+
+    0%,100% {
+
+        transform:translateY(0);
+
+    }
+
+    50% {
+
+        transform:translateY(-15px);
+
+    }
+
+}
+
+
+
+@keyframes slideUp {
+
+    from {
+
+        opacity:0;
+
+        transform:translateY(30px);
+
+    }
+
+    to {
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+
+@keyframes rotate {
+
+    from {
+
+        transform:rotate(0deg);
+
+    }
+
+    to {
+
+        transform:rotate(360deg);
+
+    }
+
+}
