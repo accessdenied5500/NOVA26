@@ -80,3 +80,136 @@ Future versions may include:
 - OCR-based handwritten note scanning.
 - Smart study recommendations.
 - Cloud synchronization.
+
+# 4. Functional Requirements
+
+Functional requirements describe what the system should do.
+
+---
+
+## 4.1 User Management
+
+The system should allow users to:
+
+- Create a new account.
+- Login using valid credentials.
+- Logout from the application.
+- Manage personal profile information.
+
+---
+
+## 4.2 Student Dashboard
+
+The dashboard should provide:
+
+- Welcome message for the user.
+- Quick access to important features.
+- Today's schedule overview.
+- Recent notes.
+- Latest test performance summary.
+- Task status.
+
+---
+
+## 4.3 Schedule Management
+
+The system should allow students to:
+
+- Add daily study schedules.
+- Edit existing schedules.
+- Delete schedules.
+- View upcoming activities.
+- Organize tasks according to time and priority.
+
+---
+
+## 4.4 Notes Management
+
+The system should allow students to:
+
+- Create notes.
+- Edit notes.
+- Delete notes.
+- Store notes according to subjects.
+- Search saved notes.
+
+---
+
+## 4.5 Test Record Management
+
+The system should allow students to:
+
+- Add test information.
+- Store subject-wise marks.
+- View previous test records.
+- Monitor academic improvement.
+
+---
+
+## 4.6 Calculator
+
+The application should provide:
+
+- Basic mathematical calculations.
+- Quick access calculator tool for students.
+
+---
+
+## 4.7 AI Assistant (Future Feature)
+
+The AI assistant should provide:
+
+- Question solving support.
+- Concept explanations.
+- Study recommendations.
+- Personalized learning assistance.
+
+---
+
+# 5. Non-Functional Requirements
+
+Non-functional requirements describe system quality.
+
+---
+
+## 5.1 Performance
+
+- The application should load quickly.
+- User actions should receive fast responses.
+- Database operations should be optimized.
+
+---
+
+## 5.2 Security
+
+- User data should be protected.
+- Passwords should be stored securely.
+- Unauthorized access should be prevented.
+
+---
+
+## 5.3 Usability
+
+- The interface should be simple and student-friendly.
+- Navigation should be easy.
+- The application should support mobile screens.
+
+---
+
+## 5.4 Reliability
+
+- Data should be stored safely.
+- The system should handle errors properly.
+- Regular backups should be possible.
+
+---
+
+## 5.5 Scalability
+
+The application should support:
+
+- More users.
+- Additional features.
+- Future AI integration.
+
+---
