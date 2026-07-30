@@ -213,3 +213,173 @@ The application should support:
 - Future AI integration.
 
 ---
+
+# 6. Technology Requirements
+
+## 6.1 Frontend Technologies
+
+The frontend of Nova 26 will use:
+
+- HTML5 for creating the structure of web pages.
+- CSS3 for designing the user interface.
+- JavaScript for interactive features and client-side functionality.
+
+The interface will be designed using a mobile-first approach to provide a better experience on smartphones.
+
+---
+
+## 6.2 Backend Technologies
+
+The backend will use:
+
+- Python programming language.
+- Flask framework for creating backend services and APIs.
+
+The backend will handle:
+
+- User authentication.
+- Data processing.
+- Communication between frontend and database.
+
+---
+
+## 6.3 Database Technology
+
+The application will use:
+
+- MySQL database.
+
+MySQL will store:
+
+- User information.
+- Notes.
+- Schedules.
+- Test records.
+- Tasks.
+- Application settings.
+
+---
+
+# 7. System Architecture
+
+Nova 26 will follow a three-layer architecture:
+
+## 7.1 Presentation Layer
+
+Responsible for:
+
+- User interface.
+- Screens.
+- User interaction.
+
+Technologies:
+
+- HTML
+- CSS
+- JavaScript
+
+---
+
+## 7.2 Application Layer
+
+Responsible for:
+
+- Business logic.
+- Data processing.
+- API communication.
+
+Technology:
+
+- Python Flask
+
+---
+
+## 7.3 Data Layer
+
+Responsible for:
+
+- Storing and retrieving information.
+
+Technology:
+
+- MySQL Database
+
+---
+
+# 8. Database Requirements
+
+The main database tables will include:
+
+## 8.1 Users Table
+
+Stores user account information.
+
+Fields:
+
+- User ID
+- Name
+- Email
+- Password
+- Created Date
+
+---
+
+## 8.2 Notes Table
+
+Stores student notes.
+
+Fields:
+
+- Note ID
+- User ID
+- Subject
+- Title
+- Content
+- Created Date
+
+---
+
+## 8.3 Schedule Table
+
+Stores student schedules.
+
+Fields:
+
+- Schedule ID
+- User ID
+- Task Name
+- Date
+- Time
+- Priority
+
+---
+
+## 8.4 Tests Table
+
+Stores test performance records.
+
+Fields:
+
+- Test ID
+- User ID
+- Subject
+- Test Name
+- Marks
+- Date
+
+---
+
+# 9. Development Plan
+
+The development of Nova 26 will follow these stages:
+
+1. UI/UX Design
+2. Frontend Development
+3. Backend Development
+4. Database Integration
+5. Feature Implementation
+6. Testing
+7. Deployment
+8. Future AI Integration
+
+---
