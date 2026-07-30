@@ -383,3 +383,100 @@ The development of Nova 26 will follow these stages:
 8. Future AI Integration
 
 ---
+
+# 10. Testing Requirements
+
+Testing will be performed to ensure Nova 26 works correctly and provides a reliable user experience.
+
+## 10.1 Functional Testing
+
+Functional testing will verify:
+
+- User registration and login.
+- Schedule creation and management.
+- Notes creation and editing.
+- Test record storage.
+- Calculator functionality.
+
+---
+
+## 10.2 Database Testing
+
+Database testing will verify:
+
+- Correct data storage.
+- Data retrieval.
+- Data updating.
+- Data deletion.
+- Database security.
+
+---
+
+## 10.3 User Interface Testing
+
+UI testing will verify:
+
+- Mobile responsiveness.
+- Easy navigation.
+- Proper display of information.
+- User-friendly design.
+
+---
+
+# 11. Security Requirements
+
+Nova 26 will implement security measures including:
+
+- Secure user authentication.
+- Password protection.
+- Database access control.
+- Prevention of unauthorized access.
+- Safe handling of user information.
+
+---
+
+# 12. Future Enhancements
+
+Future versions of Nova 26 may include:
+
+## 12.1 AI Study Assistant
+
+An AI-powered assistant that can:
+
+- Solve academic questions.
+- Explain concepts.
+- Suggest study methods.
+- Create personalized study plans.
+
+---
+
+## 12.2 Smart Learning Features
+
+Possible improvements:
+
+- Performance analysis.
+- Automatic study recommendations.
+- Weak subject identification.
+- Exam preparation assistance.
+
+---
+
+## 12.3 Advanced Features
+
+Future updates may include:
+
+- Android application.
+- Cloud synchronization.
+- Voice commands.
+- PDF and image-based note processing.
+- Multi-device support.
+
+---
+
+# 13. Conclusion
+
+Nova 26 aims to become a complete student productivity platform that combines academic organization tools with intelligent learning assistance.
+
+The project will be developed step by step using modern technologies such as HTML, CSS, JavaScript, Python, Flask, and MySQL.
+
+The goal is to create a simple, efficient, and useful application that helps students manage their studies effectively.
