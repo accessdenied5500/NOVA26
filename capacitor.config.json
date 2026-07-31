@@ -1,0 +1,6 @@
+{
+  "appId": "com.nova26.studentapp",
+  "appName": "Nova 26",
+  "webDir": "frontend",
+  "bundledWebRuntime": false
+}

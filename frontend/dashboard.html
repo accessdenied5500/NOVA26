@@ -1,90 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Nova 26 Dashboard</title>
-
-<link rel="stylesheet" href="css/style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2563eb">
+    <title>Nova 26 Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
+<body class="app-body">
+    <div class="app-shell">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">Student OS</p>
+                <h1>Hello, Student 👋</h1>
+                <p class="subtext">Your smart study home with progress, notes, calculator, and future career guidance.</p>
+            </div>
+            <button id="resetDataBtn" class="secondary-btn">Reset Demo Data</button>
+        </header>
 
+        <nav class="nav-pills" aria-label="Dashboard navigation">
+            <button class="nav-btn active" data-target="home">Home</button>
+            <button class="nav-btn" data-target="profile">Profile</button>
+            <button class="nav-btn" data-target="notes">Notes</button>
+            <button class="nav-btn" data-target="calculator">Calculator</button>
+            <button class="nav-btn" data-target="assistant">Assistant</button>
+        </nav>
 
-<body>
+        <section id="home" class="content-section active">
+            <div class="hero-grid">
+                <article class="hero-card">
+                    <div class="card-header">
+                        <h2>Today’s plan</h2>
+                        <span class="pill">Focus mode</span>
+                    </div>
+                    <div class="progress-row">
+                        <div class="progress-track">
+                            <div id="dailyProgress" class="progress-fill"></div>
+                        </div>
+                        <span id="progressLabel">72% complete</span>
+                    </div>
+                    <ul id="taskList" class="task-list"></ul>
+                </article>
 
+                <article class="hero-card accent">
+                    <div class="card-header">
+                        <h2>Study insight</h2>
+                        <span class="pill">Live</span>
+                    </div>
+                    <p id="focusSummary">You are strongest in practical subjects. Keep the next session focused on revision and problem solving.</p>
+                    <div class="chip-row">
+                        <span class="chip">Analytics</span>
+                        <span class="chip">Planning</span>
+                        <span class="chip">Improvement</span>
+                    </div>
+                </article>
+            </div>
 
-<div class="dashboard-container">
+            <div class="grid">
+                <article class="card">
+                    <div class="card-header">
+                        <h3>🗓 Schedule</h3>
+                        <span class="subtle">Today</span>
+                    </div>
+                    <ul id="scheduleList" class="schedule-list"></ul>
+                    <form id="scheduleForm" class="inline-form">
+                        <input id="scheduleInput" type="text" placeholder="Add a study task">
+                        <button type="submit">Add</button>
+                    </form>
+                </article>
 
+                <article class="card">
+                    <div class="card-header">
+                        <h3>📈 Improvement</h3>
+                        <span class="subtle">This month</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Math</span>
+                        <div class="bar"><div style="width: 78%"></div></div>
+                        <span>78%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Economics</span>
+                        <div class="bar"><div style="width: 84%"></div></div>
+                        <span>84%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>English</span>
+                        <div class="bar"><div style="width: 72%"></div></div>
+                        <span>72%</span>
+                    </div>
+                    <p class="insight">Momentum is strong. A short revision block tonight could lift your average by 5%.</p>
+                </article>
+            </div>
+        </section>
 
-<h1>Hello, Student 👋</h1>
+        <section id="profile" class="content-section">
+            <article class="card profile-card">
+                <div class="avatar">SY</div>
+                <h2>Student Profile</h2>
+                <p>Class 12 • Commerce • Focused learner</p>
+                <div class="profile-stats">
+                    <div><strong>4</strong><span>Active goals</span></div>
+                    <div><strong>12</strong><span>Notes saved</span></div>
+                    <div><strong>3</strong><span>Study streak days</span></div>
+                </div>
+                <p class="insight">You are building strong habits. Keep your next session focused on one subject and one goal.</p>
+            </article>
+        </section>
 
-<p>Your Personal Study Dashboard</p>
+        <section id="notes" class="content-section">
+            <article class="card">
+                <div class="card-header">
+                    <h3>📝 Notes</h3>
+                    <span class="subtle">Subject-based</span>
+                </div>
+                <input id="dashboardSearch" type="text" placeholder="Search notes...">
+                <div id="dashboardSubjectTabs" class="subject-tabs"></div>
+                <form id="dashboardNoteForm" class="note-form">
+                    <input id="dashboardNoteTitle" type="text" placeholder="Note title" required>
+                    <select id="dashboardNoteSubject">
+                        <option>Informatics Practices</option>
+                        <option>Economics</option>
+                        <option>Business Studies</option>
+                        <option>Accountancy</option>
+                        <option>English</option>
+                    </select>
+                    <textarea id="dashboardNoteContent" rows="4" placeholder="Write your note here..." required></textarea>
+                    <button type="submit" class="primary-btn">Save note</button>
+                </form>
+                <div id="dashboardNotesList" class="notes-list"></div>
+            </article>
+        </section>
 
+        <section id="calculator" class="content-section">
+            <article class="card">
+                <div class="card-header">
+                    <h3>🧮 Calculator</h3>
+                    <span class="subtle">Quick math</span>
+                </div>
+                <input id="calcDisplay" class="calc-display" value="0" readonly>
+                <div class="calc-grid">
+                    <button class="calc-btn" data-value="7">7</button>
+                    <button class="calc-btn" data-value="8">8</button>
+                    <button class="calc-btn" data-value="9">9</button>
+                    <button class="calc-btn op" data-value="/">/</button>
+                    <button class="calc-btn" data-value="4">4</button>
+                    <button class="calc-btn" data-value="5">5</button>
+                    <button class="calc-btn" data-value="6">6</button>
+                    <button class="calc-btn op" data-value="*">×</button>
+                    <button class="calc-btn" data-value="1">1</button>
+                    <button class="calc-btn" data-value="2">2</button>
+                    <button class="calc-btn" data-value="3">3</button>
+                    <button class="calc-btn op" data-value="-">−</button>
+                    <button class="calc-btn" data-value="0">0</button>
+                    <button class="calc-btn" data-value=".">.</button>
+                    <button class="calc-btn" id="calcEqual">=</button>
+                    <button class="calc-btn op" data-value="+">+</button>
+                </div>
+                <div class="calc-actions">
+                    <button class="secondary-btn" id="calcClear">Clear</button>
+                    <button class="secondary-btn" id="calcBack">Back</button>
+                </div>
+            </article>
+        </section>
 
-<div class="progress-card">
+        <section id="assistant" class="content-section">
+            <article class="card assistant-card">
+                <div class="card-header">
+                    <h3>🤖 AI Study & Career Assistant</h3>
+                    <span class="subtle">Future jobs & courses</span>
+                </div>
 
-<h2>Today's Progress</h2>
+                <div id="assistantChat" class="assistant-chat">
+                    <div class="assistant-message assistant">
+                        <strong>Nova</strong>
+                        <p>Hi! I can help you plan your studies, choose future careers, and decide which courses fit your goals.</p>
+                    </div>
+                </div>
 
-<div class="progress-bar">
+                <div class="suggestion-row">
+                    <button type="button" class="suggestion-pill" data-prompt="Suggest a future career path for me">Career path</button>
+                    <button type="button" class="suggestion-pill" data-prompt="Recommend courses for software development">Course ideas</button>
+                    <button type="button" class="suggestion-pill" data-prompt="Help me choose between commerce and technology">Choose path</button>
+                </div>
 
-<div class="progress"></div>
+                <form id="assistantForm" class="assistant-form">
+                    <input id="assistantInput" type="text" placeholder="Ask about jobs, courses, or goals...">
+                    <button type="submit" class="primary-btn">Send</button>
+                </form>
 
-</div>
+                <form id="careerForm" class="decision-form">
+                    <label>
+                        Interest
+                        <select id="interestSelect">
+                            <option value="technology">Technology</option>
+                            <option value="business">Business</option>
+                            <option value="design">Design</option>
+                        </select>
+                    </label>
+                    <label>
+                        Direction
+                        <select id="pathSelect">
+                            <option value="job">Get a job faster</option>
+                            <option value="course">Choose a course</option>
+                            <option value="skill">Build a skill</option>
+                        </select>
+                    </label>
+                    <button type="submit" class="primary-btn">Get advice</button>
+                </form>
+                <div id="careerResult" class="assistant-reply"></div>
+            </article>
+        </section>
+    </div>
 
-<p>80% Completed</p>
-
-</div>
-
-
-
-<div class="card-section">
-
-
-<div class="card">
-
-<h3>📅 Schedule</h3>
-
-<p>View your daily plan</p>
-
-</div>
-
-
-<div class="card">
-
-<h3>📝 Notes</h3>
-
-<p>Create and manage notes</p>
-
-</div>
-
-
-<div class="card">
-
-<h3>📊 Tests</h3>
-
-<p>Track your performance</p>
-
-</div>
-
-
-<div class="card">
-
-<h3>🧮 Calculator</h3>
-
-<p>Quick calculations</p>
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
+    <script src="js/app.js"></script>
 </body>
-
 </html>

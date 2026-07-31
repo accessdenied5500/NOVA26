@@ -1,56 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2563eb">
     <title>Nova 26 Login</title>
-
     <link rel="stylesheet" href="css/style.css">
-
+    <link rel="manifest" href="manifest.json">
 </head>
-
-
 <body>
+    <div class="login-container">
+        <div class="logo">✦</div>
+        <h1>Nova 26</h1>
+        <p>Welcome back. Let’s make today productive.</p>
 
-<div class="login-container">
+        <div class="login-box">
+            <input id="emailInput" type="email" placeholder="Email" value="student@nova26.com">
+            <input id="passwordInput" type="password" placeholder="Password" value="demo1234">
 
-    <div class="logo">
-        ✦
+            <button id="loginBtn">Login</button>
+            <a href="#">Create Account</a>
+            <p class="helper-text">Demo login: student@nova26.com / demo1234</p>
+        </div>
     </div>
 
-    <h1>Nova 26</h1>
-
-    <p>Welcome Back</p>
-
-
-    <div class="login-box">
-
-        <input type="email" placeholder="Email">
-
-        <input type="password" placeholder="Password">
-
-
-        <button onclick="openDashboard()">
-             Login
-        </button>
-
-
-        <a href="#">
-            Create Account
-        </a>
-
-    </div>
-
-
-</div>
-
-
-<script src="js/app.js"></script>
-
-
+    <script src="js/app.js"></script>
 </body>
-
 </html>
