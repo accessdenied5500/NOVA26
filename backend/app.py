@@ -3,75 +3,43 @@ from pathlib import Path
 import hashlib
 import json
 import secrets
-import sqlite3
 
 app = Flask(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = BASE_DIR / "frontend"
-DB_PATH = BASE_DIR / "database" / "nova26.sqlite3"
-
-
-def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+STORAGE_FILE = BASE_DIR / "database" / "users_store.json"
 
 
 def init_db():
-    conn = get_db()
-    conn.execute(
-        """
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            username TEXT,
-            class_name TEXT,
-            board TEXT,
-            subject TEXT,
-            email TEXT,
-            password_hash TEXT NOT NULL,
-            token TEXT UNIQUE
-        )
-        """
-    )
-    conn.execute(
-        """
-        CREATE TABLE IF NOT EXISTS user_data (
-            user_id INTEGER PRIMARY KEY,
-            data_json TEXT NOT NULL DEFAULT '{}'
-        )
-        """
-    )
-
-    columns = {row[1] for row in conn.execute("PRAGMA table_info(users)")}
-    for column_name, definition in {
-        "username": "TEXT",
-        "class_name": "TEXT",
-        "board": "TEXT",
-        "subject": "TEXT",
-        "email": "TEXT",
-    }.items():
-        if column_name not in columns:
-            conn.execute(f"ALTER TABLE users ADD COLUMN {column_name} {definition}")
-
-    conn.execute("UPDATE users SET username = email WHERE username IS NULL AND email IS NOT NULL")
-    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username)")
-    conn.commit()
-    conn.close()
+    STORAGE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    if not STORAGE_FILE.exists():
+        STORAGE_FILE.write_text(json.dumps({"users": [], "user_data": {}}, indent=2))
 
 
-def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+def load_store():
+    try:
+        return json.loads(STORAGE_FILE.read_text())
+    except Exception:
+        return {"users": [], "user_data": {}}
+
+
+def save_store(data):
+    STORAGE_FILE.write_text(json.dumps(data, indent=2))
 
 
 def get_user_from_token(token: str):
     if not token:
         return None
-    conn = get_db()
-    user = conn.execute("SELECT * FROM users WHERE token = ?", (token,)).fetchone()
-    conn.close()
-    return user
+    store = load_store()
+    for user in store.get("users", []):
+        if user.get("token") == token:
+            return user
+    return None
+
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
 
 init_db()
@@ -97,22 +65,23 @@ def register():
     if not name or not username or not password:
         return jsonify({"error": "Name, username, and password are required"}), 400
 
-    conn = get_db()
-    existing = conn.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
-    if existing:
-        conn.close()
+    store = load_store()
+    if any(user.get("username") == username for user in store.get("users", [])):
         return jsonify({"error": "Username already taken"}), 400
 
     token = secrets.token_hex(16)
     password_hash = hash_password(password)
-    cursor = conn.execute(
-        "INSERT INTO users (name, username, password_hash, token) VALUES (?, ?, ?, ?)",
-        (name, username, password_hash, token),
-    )
-    user_id = cursor.lastrowid
-    conn.execute("INSERT INTO user_data (user_id, data_json) VALUES (?, ?)", (user_id, json.dumps({"notes": [], "schedule": [], "tasks": []})))
-    conn.commit()
-    conn.close()
+    user_id = len(store.get("users", [])) + 1
+    user = {
+        "id": user_id,
+        "name": name,
+        "username": username,
+        "password_hash": password_hash,
+        "token": token,
+    }
+    store.setdefault("users", []).append(user)
+    store.setdefault("user_data", {})[str(user_id)] = {"notes": [], "schedule": [], "tasks": []}
+    save_store(store)
 
     return jsonify({
         "user": {
@@ -134,16 +103,12 @@ def login():
     if not username or not password:
         return jsonify({"error": "Username and password are required"}), 400
 
-    conn = get_db()
-    user = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
-    if not user or user["password_hash"] != hash_password(password):
-        conn.close()
+    store = load_store()
+    user = next((item for item in store.get("users", []) if item.get("username") == username), None)
+    if not user or user.get("password_hash") != hash_password(password):
         return jsonify({"error": "Invalid username or password"}), 401
 
-    data_row = conn.execute("SELECT data_json FROM user_data WHERE user_id = ?", (user["id"],)).fetchone()
-    conn.close()
-
-    data_payload = json.loads(data_row["data_json"]) if data_row else {"notes": [], "schedule": [], "tasks": []}
+    data_payload = store.get("user_data", {}).get(str(user["id"]), {"notes": [], "schedule": [], "tasks": []})
 
     return jsonify({
         "user": {
@@ -166,11 +131,9 @@ def profile():
     if not user:
         return jsonify({"error": "Invalid session"}), 401
 
-    conn = get_db()
+    store = load_store()
     if request.method == "GET":
-        data_row = conn.execute("SELECT data_json FROM user_data WHERE user_id = ?", (user["id"],)).fetchone()
-        conn.close()
-        data_payload = json.loads(data_row["data_json"]) if data_row else {"notes": [], "schedule": [], "tasks": []}
+        data_payload = store.get("user_data", {}).get(str(user["id"]), {"notes": [], "schedule": [], "tasks": []})
         return jsonify({
             "user": {
                 "id": user["id"],
@@ -182,9 +145,8 @@ def profile():
 
     payload = request.get_json(silent=True) or {}
     data_payload = payload.get("data") or {"notes": [], "schedule": [], "tasks": []}
-    conn.execute("UPDATE user_data SET data_json = ? WHERE user_id = ?", (json.dumps(data_payload), user["id"]))
-    conn.commit()
-    conn.close()
+    store.setdefault("user_data", {})[str(user["id"])] = data_payload
+    save_store(store)
     return jsonify({"success": True, "data": data_payload})
 
 
@@ -192,10 +154,12 @@ def profile():
 def logout():
     token = request.headers.get("Authorization", "").replace("Bearer ", "", 1).strip()
     if token:
-        conn = get_db()
-        conn.execute("UPDATE users SET token = NULL WHERE token = ?", (token,))
-        conn.commit()
-        conn.close()
+        store = load_store()
+        for user in store.get("users", []):
+            if user.get("token") == token:
+                user["token"] = None
+                break
+        save_store(store)
     return jsonify({"success": True})
 
 

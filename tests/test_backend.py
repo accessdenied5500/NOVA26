@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import tempfile
@@ -12,8 +13,8 @@ import backend.app as backend_app
 class BackendTestCase(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
-        self.db_path = Path(self.temp_dir) / "nova26.sqlite3"
-        backend_app.DB_PATH = self.db_path
+        self.store_path = Path(self.temp_dir) / "users_store.json"
+        backend_app.STORAGE_FILE = self.store_path
         backend_app.init_db()
         self.client = backend_app.app.test_client()
 
@@ -23,6 +24,9 @@ class BackendTestCase(unittest.TestCase):
             json={"name": "Test Student", "username": "teststudent", "password": "secret123"},
         )
         self.assertEqual(register_resp.status_code, 200)
+        self.assertTrue(self.store_path.exists())
+        store_data = json.loads(self.store_path.read_text())
+        self.assertEqual(len(store_data["users"]), 1)
 
         login_resp = self.client.post(
             "/api/login",
