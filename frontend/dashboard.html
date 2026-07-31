@@ -16,7 +16,7 @@
                 <h1>Hello, Student 👋</h1>
                 <p class="subtext">Your smart study home with progress, notes, calculator, and future career guidance.</p>
             </div>
-            <button id="resetDataBtn" class="secondary-btn">Reset Demo Data</button>
+            <button id="resetDataBtn" class="secondary-btn">Reset saved data</button>
         </header>
 
         <nav class="nav-pills" aria-label="Dashboard navigation">
@@ -97,15 +97,15 @@
 
         <section id="profile" class="content-section">
             <article class="card profile-card">
-                <div class="avatar">SY</div>
-                <h2>Student Profile</h2>
-                <p>Class 12 • Commerce • Focused learner</p>
+                <div class="avatar" id="profileAvatar">SY</div>
+                <h2 id="profileName">Student Profile</h2>
+                <p id="profileMeta">Loading your profile...</p>
                 <div class="profile-stats">
-                    <div><strong>4</strong><span>Active goals</span></div>
-                    <div><strong>12</strong><span>Notes saved</span></div>
-                    <div><strong>3</strong><span>Study streak days</span></div>
+                    <div><strong id="profileGoals">4</strong><span>Active goals</span></div>
+                    <div><strong id="profileNotesCount">0</strong><span>Notes saved</span></div>
+                    <div><strong id="profileStreak">3</strong><span>Study streak days</span></div>
                 </div>
-                <p class="insight">You are building strong habits. Keep your next session focused on one subject and one goal.</p>
+                <p class="insight" id="profileInsight">You are building strong habits. Keep your next session focused on one subject and one goal.</p>
             </article>
         </section>
 

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nova 26 logo">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect x="24" y="24" width="464" height="464" rx="120" fill="url(#bg)"/>
+  <circle cx="184" cy="208" r="84" fill="#ffffff" opacity="0.95"/>
+  <circle cx="328" cy="208" r="84" fill="#e0f2fe" opacity="0.95"/>
+  <path d="M132 336c36-48 88-72 144-72s108 24 144 72" stroke="#0f172a" stroke-width="24" fill="none" stroke-linecap="round"/>
+  <path d="M148 154c18-38 48-60 92-60 46 0 76 24 92 60" stroke="#0f172a" stroke-width="20" fill="none" stroke-linecap="round"/>
+  <text x="256" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="72" font-weight="700" fill="#ffffff" letter-spacing="6">NOVA 26</text>
+</svg>

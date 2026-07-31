@@ -34,6 +34,27 @@ function saveStored(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
 }
 
+function getAuthToken() {
+    return localStorage.getItem("nova26-token") || "";
+}
+
+async function apiRequest(path, options = {}) {
+    const headers = { ...(options.headers || {}) };
+    const token = getAuthToken();
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+    if (options.body && !(options.body instanceof FormData)) {
+        headers["Content-Type"] = "application/json";
+    }
+    const response = await fetch(path, { ...options, headers });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.error || "Request failed");
+    }
+    return data;
+}
+
 function redirectTo(path) {
     window.location.href = path;
 }
@@ -48,26 +69,103 @@ function openNotes() {
 
 function initSplash() {
     if (document.querySelector(".splash-container")) {
+        const installBanner = document.getElementById("installBanner");
+        const installBtn = document.getElementById("installBtn");
+        let deferredPrompt = null;
+
+        window.addEventListener("beforeinstallprompt", (event) => {
+            event.preventDefault();
+            deferredPrompt = event;
+            installBanner?.removeAttribute("hidden");
+        });
+
+        installBtn?.addEventListener("click", async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            installBanner?.setAttribute("hidden", "true");
+        });
+
         setTimeout(() => {
             redirectTo("login.html");
-        }, 2500);
+        }, 5000);
     }
 }
 
 function initLogin() {
     const loginBtn = document.getElementById("loginBtn");
+    const showRegisterBtn = document.getElementById("showRegisterBtn");
+    const registerForm = document.getElementById("registerForm");
     if (!loginBtn) return;
 
-    loginBtn.addEventListener("click", () => {
-        const email = document.getElementById("emailInput").value.trim();
+    showRegisterBtn?.addEventListener("click", () => {
+        const isHidden = registerForm?.hasAttribute("hidden");
+        if (registerForm) {
+            if (isHidden) {
+                registerForm.removeAttribute("hidden");
+                showRegisterBtn.textContent = "Hide form";
+            } else {
+                registerForm.setAttribute("hidden", "true");
+                showRegisterBtn.textContent = "Create account";
+            }
+        }
+    });
+
+    loginBtn.addEventListener("click", async () => {
+        const username = document.getElementById("usernameInput").value.trim();
         const password = document.getElementById("passwordInput").value.trim();
 
-        if (!email || !password) {
-            alert("Please enter your email and password.");
+        if (!username || !password) {
+            alert("Please enter your username and password.");
             return;
         }
 
-        openDashboard();
+        try {
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Signing in...";
+            const result = await apiRequest("/api/login", {
+                method: "POST",
+                body: JSON.stringify({ username, password })
+            });
+            localStorage.setItem("nova26-token", result.user.token);
+            localStorage.setItem("nova26-user", JSON.stringify(result.user));
+            localStorage.setItem("nova26-profile", JSON.stringify(result.data));
+            openDashboard();
+        } catch (error) {
+            alert(error.message || "Login failed");
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Login";
+        }
+    });
+
+    registerForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const payload = {
+            name: document.getElementById("registerName").value.trim(),
+            username: document.getElementById("registerUsername").value.trim().toLowerCase(),
+            password: document.getElementById("registerPassword").value
+        };
+
+        if (!payload.name || !payload.username || !payload.password) {
+            alert("Please complete all fields to create an account.");
+            return;
+        }
+
+        try {
+            const result = await apiRequest("/api/register", {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+            localStorage.setItem("nova26-token", result.user.token);
+            localStorage.setItem("nova26-user", JSON.stringify(result.user));
+            localStorage.setItem("nova26-profile", JSON.stringify(result.data));
+            alert(`Account created for ${result.user.username}. You can log in with your username and password.`);
+            openDashboard();
+        } catch (error) {
+            alert(error.message || "Registration failed");
+        }
     });
 }
 
@@ -97,6 +195,11 @@ function initDashboard() {
     const dashboardNoteTitle = document.getElementById("dashboardNoteTitle");
     const dashboardNoteSubject = document.getElementById("dashboardNoteSubject");
     const dashboardNoteContent = document.getElementById("dashboardNoteContent");
+    const profileName = document.getElementById("profileName");
+    const profileMeta = document.getElementById("profileMeta");
+    const profileAvatar = document.getElementById("profileAvatar");
+    const profileNotesCount = document.getElementById("profileNotesCount");
+    const profileInsight = document.getElementById("profileInsight");
 
     const subjects = ["All", "Informatics Practices", "Economics", "Business Studies", "Accountancy", "English"];
     let selectedSubject = "All";
@@ -105,6 +208,62 @@ function initDashboard() {
     let tasks = getStored(STORAGE_KEYS.tasks, DEFAULT_TASKS);
     let schedule = getStored(STORAGE_KEYS.schedule, DEFAULT_SCHEDULE);
     let notes = getStored(STORAGE_KEYS.notes, DEFAULT_NOTES);
+
+    function updateProfileCard(user) {
+        if (!profileName || !profileMeta || !profileAvatar || !profileNotesCount || !profileInsight) return;
+
+        const safeUser = user || JSON.parse(localStorage.getItem("nova26-user") || "null") || {};
+        const displayName = safeUser.name || "Student";
+        const className = safeUser.class_name || "Class";
+        const board = safeUser.board || "Board";
+        const subject = safeUser.subject || "Subject";
+        const initials = displayName
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0])
+            .join("")
+            .toUpperCase() || "ST";
+
+        profileName.textContent = displayName;
+        profileMeta.textContent = `${className} • ${board} • ${subject}`;
+        profileAvatar.textContent = initials;
+        profileNotesCount.textContent = String(notes.length);
+        profileInsight.textContent = `You are building strong habits in ${subject}. Keep your next session focused on one goal and one clear revision block.`;
+    }
+
+    async function syncProfile() {
+        try {
+            const profile = await apiRequest("/api/profile");
+            if (profile.user) {
+                localStorage.setItem("nova26-user", JSON.stringify(profile.user));
+            }
+            if (profile.data) {
+                const payload = profile.data;
+                if (payload.notes) notes = payload.notes;
+                if (payload.schedule) schedule = payload.schedule;
+                if (payload.tasks) tasks = payload.tasks;
+                saveStored(STORAGE_KEYS.notes, notes);
+                saveStored(STORAGE_KEYS.schedule, schedule);
+                saveStored(STORAGE_KEYS.tasks, tasks);
+            }
+            updateProfileCard(profile.user || JSON.parse(localStorage.getItem("nova26-user") || "null"));
+        } catch (error) {
+            console.warn("Profile sync failed", error);
+            updateProfileCard();
+        }
+    }
+
+    async function persistProfile() {
+        try {
+            await apiRequest("/api/profile", {
+                method: "POST",
+                body: JSON.stringify({ data: { notes, schedule, tasks } })
+            });
+        } catch (error) {
+            console.warn("Profile save failed", error);
+        }
+    }
 
     function renderTasks() {
         if (!taskList) return;
@@ -127,12 +286,13 @@ function initDashboard() {
         }
     }
 
-    taskList?.addEventListener("change", (event) => {
+    taskList?.addEventListener("change", async (event) => {
         if (event.target.matches("input[type='checkbox']")) {
             const index = Number(event.target.dataset.index);
             tasks[index].checked = event.target.checked;
             saveStored(STORAGE_KEYS.tasks, tasks);
             renderTasks();
+            await persistProfile();
         }
     });
 
@@ -146,7 +306,7 @@ function initDashboard() {
         `).join("");
     }
 
-    scheduleForm?.addEventListener("submit", (event) => {
+    scheduleForm?.addEventListener("submit", async (event) => {
         event.preventDefault();
         const value = scheduleInput.value.trim();
         if (!value) return;
@@ -154,15 +314,17 @@ function initDashboard() {
         saveStored(STORAGE_KEYS.schedule, schedule);
         scheduleInput.value = "";
         renderSchedule();
+        await persistProfile();
     });
 
-    scheduleList?.addEventListener("click", (event) => {
+    scheduleList?.addEventListener("click", async (event) => {
         const button = event.target.closest("button[data-index]");
         if (!button) return;
         const index = Number(button.dataset.index);
         schedule.splice(index, 1);
         saveStored(STORAGE_KEYS.schedule, schedule);
         renderSchedule();
+        await persistProfile();
     });
 
     function renderNotes() {
@@ -343,7 +505,7 @@ function initDashboard() {
         renderDashboardNotes();
     });
 
-    dashboardNoteForm?.addEventListener("submit", (event) => {
+    dashboardNoteForm?.addEventListener("submit", async (event) => {
         event.preventDefault();
         const title = dashboardNoteTitle.value.trim();
         const content = dashboardNoteContent.value.trim();
@@ -357,17 +519,19 @@ function initDashboard() {
         saveStored(STORAGE_KEYS.notes, notes);
         dashboardNoteForm.reset();
         renderDashboardNotes();
+        await persistProfile();
     });
 
-    dashboardNotesList?.addEventListener("click", (event) => {
+    dashboardNotesList?.addEventListener("click", async (event) => {
         const button = event.target.closest("button[data-id]");
         if (!button) return;
         notes = notes.filter((note) => note.id !== Number(button.dataset.id));
         saveStored(STORAGE_KEYS.notes, notes);
         renderDashboardNotes();
+        await persistProfile();
     });
 
-    resetDataBtn?.addEventListener("click", () => {
+    resetDataBtn?.addEventListener("click", async () => {
         saveStored(STORAGE_KEYS.notes, DEFAULT_NOTES);
         saveStored(STORAGE_KEYS.schedule, DEFAULT_SCHEDULE);
         saveStored(STORAGE_KEYS.tasks, DEFAULT_TASKS);
@@ -377,14 +541,17 @@ function initDashboard() {
         renderTasks();
         renderSchedule();
         renderNotes();
-        alert("Demo data restored.");
+        await persistProfile();
+        alert("Saved data has been restored.");
     });
 
+    updateProfileCard(JSON.parse(localStorage.getItem("nova26-user") || "null"));
     renderTasks();
     renderSchedule();
     renderNotes();
     renderDashboardNotes();
     handleCalculator();
+    syncProfile();
 }
 
 function initNotesPage() {
